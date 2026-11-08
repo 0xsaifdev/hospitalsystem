@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A connected polyclinic platform — a project case study covering the problem, solution, architecture and product screens."
+    />
+    <meta name="theme-color" content="#2869a6" />
+    <title>Hospital Management — Project case study</title>
+    <style>
+      :root {
+        --ink: #202520;
+        --muted: #70756e;
+        --paper: #f6f7f2;
+        --line: #e3e6de;
+        --accent: #2869a6;
+        --tint: color-mix(in srgb, var(--accent) 8%, white);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        color: var(--ink);
+        background: var(--paper);
+        font-synthesis: none;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 100px;
+      }
+      body {
+        margin: 0;
+      }
+      a {
+        color: var(--accent);
+        text-underline-offset: 4px;
+      }
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+      button {
+        font: inherit;
+      }
+      a:focus-visible,
+      button:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 5px;
+      }
+      ::selection {
+        background: var(--tint);
+        color: var(--accent);
+      }
+      .progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: var(--accent);
+        width: 0;
+        z-index: 30;
+      }
+      .wrap {
+        max-width: 1440px;
+        margin: auto;
+        padding: 0 5%;
+      }
+      .topbar {
+        height: 84px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+        gap: 20px;
+      }
+      .brand {
+        font-weight: 750;
+        font-size: 15px;
+        letter-spacing: -0.4px;
+        color: var(--ink);
+        text-decoration: none;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .brand-mark {
+        height: 28px;
+        width: 28px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3px;
+        transform: rotate(-8deg);
+      }
+      .brand-mark i {
+        background: var(--accent);
+        border-radius: 3px;
+      }
+      .brand-mark i:last-child {
+        opacity: 0.35;
+      }
+      .toplinks {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        font-size: 12px;
+      }
+      .toplinks a {
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .toplinks a:hover {
+        color: var(--accent);
+      }
+      .pill {
+        border: 1px solid var(--line);
+        border-radius: 50px;
+        padding: 8px 12px;
+        font-size: 11px;
+        letter-spacing: 0.05em;
+      }
+      .hero {
+        padding: 64px 0 30px;
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 32px;
+        align-items: end;
+      }
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+      h1 {
+        font-size: clamp(40px, 5.3vw, 76px);
+        line-height: 1.03;
+        letter-spacing: -0.065em;
+        margin: 22px 0 20px;
+        font-weight: 650;
+        max-width: 850px;
+      }
+      .tagline {
+        font-size: 16px;
+        color: var(--muted);
+        line-height: 1.7;
+        margin: 0;
+      }
+      .hero-aside {
+        padding-bottom: 6px;
+        text-align: right;
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+      .hero-aside strong {
+        display: block;
+        color: var(--ink);
+        font-weight: 500;
+        font-size: 17px;
+        letter-spacing: -0.03em;
+      }
+      .overview {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin: 8px 0 42px;
+      }
+      .meta {
+        background: white;
+        border: 1px solid var(--line);
+        padding: 22px 24px;
+        border-radius: 18px;
+        min-height: 110px;
+        transition:
+          transform 0.25s,
+          border-color 0.25s;
+      }
+      .meta:hover {
+        transform: translateY(-3px);
+        border-color: var(--accent);
+      }
+      .meta-label {
+        display: block;
+        text-transform: uppercase;
+        font-size: 10px;
+        color: var(--muted);
+        letter-spacing: 0.12em;
+        margin-bottom: 12px;
+      }
+      .meta-value {
+        font-size: 13px;
+        line-height: 1.7;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 180px minmax(0, 1fr);
+        gap: 42px;
+        align-items: start;
+      }
+      .sidebar {
+        position: sticky;
+        top: 28px;
+        padding: 14px 0 30px;
+      }
+      .sidebar-title {
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        color: var(--muted);
+        margin: 0 0 19px;
+      }
+      .sidebar a {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.5;
+        text-decoration: none;
+        padding: 9px 12px;
+        border-left: 2px solid var(--line);
+        transition:
+          color 0.2s,
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .sidebar a:hover,
+      .sidebar a.active {
+        color: var(--accent);
+        border-color: var(--accent);
+        background: var(--tint);
+      }
+      .sidebar .source {
+        margin-top: 24px;
+        border: 0;
+        font-size: 11px;
+      }
+      .content {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        min-width: 0;
+      }
+      .card {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 30px;
+        min-width: 0;
+        scroll-margin-top: 28px;
+      }
+      .card.wide {
+        grid-column: 1/-1;
+      }
+      .section-no {
+        color: var(--accent);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 16px;
+      }
+      .card h2 {
+        font-size: 25px;
+        letter-spacing: -0.045em;
+        font-weight: 600;
+        line-height: 1.2;
+        margin: 0 0 19px;
+      }
+      .card h3 {
+        font-size: 17px;
+        letter-spacing: -0.025em;
+        font-weight: 600;
+        margin-top: 28px;
+      }
+      .card p,
+      .card li {
+        font-size: 14px;
+        line-height: 1.85;
+        color: #60665e;
+      }
+      .card p:last-child {
+        margin-bottom: 0;
+      }
+      .card strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .card ul,
+      .card ol {
+        padding-left: 19px;
+      }
+      .card li {
+        padding-left: 4px;
+        margin: 9px 0;
+      }
+      .card li::marker {
+        color: var(--accent);
+      }
+      .card blockquote {
+        margin: 18px 0;
+        padding: 2px 18px;
+        border-left: 2px solid var(--accent);
+        background: var(--tint);
+      }
+      .card code {
+        background: var(--paper);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+      .card pre {
+        overflow: auto;
+        background: var(--paper);
+        padding: 20px;
+        border-radius: 12px;
+        font-size: 12px;
+        line-height: 1.6;
+      }
+      .card pre code {
+        padding: 0;
+      }
+      .problem {
+        background: var(--tint);
+        border-color: transparent;
+      }
+      .screenshots {
+        background: transparent;
+        padding: 30px 0 0;
+        border: 0;
+      }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+      .shot {
+        margin: 0;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        overflow: hidden;
+        min-width: 0;
+        transition:
+          transform 0.25s,
+          box-shadow 0.25s;
+      }
+      .shot:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px #2025200b;
+      }
+      .shot:first-child {
+        grid-column: 1/-1;
+      }
+      .shot-text {
+        padding: 20px 22px;
+      }
+      .shot h3 {
+        margin: 0;
+        font-size: 15px;
+      }
+      .shot p {
+        font-size: 12px;
+        line-height: 1.7;
+        margin: 8px 0 0;
+      }
+      .image-button {
+        border: 0;
+        padding: 14px;
+        background: #edf0e9;
+        display: block;
+        width: 100%;
+        cursor: zoom-in;
+      }
+      .image-button img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 7px;
+        border: 1px solid #00000009;
+        transition: transform 0.35s;
+      }
+      .image-button:hover img {
+        transform: scale(1.015);
+      }
+      .mobile-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        padding: 0 16px 18px;
+      }
+      .mobile-grid .image-button {
+        border-radius: 10px;
+        padding: 8px;
+      }
+      .mobile-grid img {
+        max-height: 410px;
+        object-fit: contain;
+      }
+      .mobile-label {
+        display: block;
+        font-size: 10px;
+        color: var(--muted);
+        padding: 8px 2px;
+      }
+      .diagram {
+        overflow: auto;
+        padding: 20px 0;
+        min-height: 120px;
+      }
+      .diagram svg {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin: auto;
+      }
+      .diagram-error {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      details summary {
+        cursor: pointer;
+        font-size: 12px;
+        color: var(--muted);
+        padding: 10px 0;
+      }
+      footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 36px 0;
+        margin-top: 54px;
+        border-top: 1px solid var(--line);
+        font-size: 11px;
+        color: var(--muted);
+      }
+      footer a {
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .notice {
+        margin: 0 0 20px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.8;
+      }
+      .reveal {
+        animation: enter 0.65s both;
+      }
+      .card:nth-child(2) {
+        animation-delay: 0.08s;
+      }
+      .card:nth-child(3) {
+        animation-delay: 0.12s;
+      }
+      @keyframes enter {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      dialog {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        background: var(--paper);
+        max-width: 94vw;
+        max-height: 94vh;
+      }
+      dialog::backdrop {
+        background: #111b17ce;
+        backdrop-filter: blur(8px);
+      }
+      dialog img {
+        display: block;
+        max-width: 88vw;
+        max-height: 78vh;
+        object-fit: contain;
+        margin: auto;
+      }
+      dialog .dialog-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 25px;
+        font-size: 12px;
+        padding-bottom: 12px;
+      }
+      dialog button {
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        font-size: 20px;
+      }
+      .top-button {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      @media (min-width: 1500px) {
+        .wrap {
+          padding: 0 72px;
+        }
+      }
+      @media (max-width: 1000px) {
+        .layout {
+          grid-template-columns: 145px minmax(0, 1fr);
+          gap: 22px;
+        }
+        .card {
+          padding: 24px;
+        }
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .hero-aside {
+          display: none;
+        }
+        .overview {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .meta:last-child {
+          grid-column: 1/-1;
+        }
+        .content {
+          grid-template-columns: 1fr;
+        }
+        .card {
+          grid-column: 1/-1;
+        }
+      }
+      @media (max-width: 680px) {
+        .wrap {
+          padding: 0 20px;
+        }
+        .topbar {
+          height: 70px;
+        }
+        .toplinks {
+          gap: 12px;
+        }
+        .toplinks .pill {
+          display: none;
+        }
+        .hero {
+          padding-top: 42px;
+        }
+        .hero h1 {
+          font-size: 46px;
+        }
+        .overview {
+          gap: 10px;
+          margin-bottom: 24px;
+        }
+        .meta {
+          padding: 18px;
+          min-height: 100px;
+          border-radius: 14px;
+        }
+        .layout {
+          display: block;
+        }
+        .sidebar {
+          position: relative;
+          top: 0;
+          display: flex;
+          overflow-x: auto;
+          gap: 8px;
+          padding: 0 0 22px;
+          margin-bottom: 6px;
+        }
+        .sidebar-title,
+        .sidebar .source {
+          display: none;
+        }
+        .sidebar a {
+          white-space: nowrap;
+          border: 1px solid var(--line);
+          border-radius: 30px;
+          padding: 8px 12px;
+          font-size: 11px;
+        }
+        .sidebar a.active {
+          border-color: var(--accent);
+        }
+        .content {
+          gap: 14px;
+        }
+        .card {
+          padding: 24px;
+          border-radius: 18px;
+        }
+        .screenshots {
+          padding: 24px 0 0;
+        }
+        .gallery {
+          grid-template-columns: 1fr;
+        }
+        .shot:first-child {
+          grid-column: auto;
+        }
+        .mobile-grid {
+          gap: 6px;
+          padding: 0 10px 14px;
+        }
+        .mobile-grid .image-button {
+          padding: 4px;
+        }
+        .image-button {
+          padding: 8px;
+        }
+        footer {
+          align-items: flex-start;
+          flex-direction: column;
+          margin-top: 32px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+      @media print {
+        .sidebar,
+        .toplinks,
+        .progress,
+        dialog,
+        .top-button {
+          display: none;
+        }
+        .layout {
+          display: block;
+        }
+        .card,
+        .shot {
+          break-inside: avoid;
+        }
+        .wrap {
+          padding: 0;
+        }
+        .hero {
+          padding-top: 24px;
+        }
+        .content {
+          display: block;
+        }
+        .card {
+          margin: 15px 0;
+        }
+        .image-button {
+          padding: 0;
+        }
+      }
+    </style>
+  </head>
+  <body id="top">
+    <div class="progress" aria-hidden="true"></div>
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="#top"
+          ><span class="brand-mark" aria-hidden="true"
+            ><i></i><i></i><i></i><i></i></span
+          >Saif / Selected work</a
+        >
+        <nav class="toplinks" aria-label="Primary">
+          <a href="https://0xsaif.vercel.app">Portfolio ↗</a>
+        </nav>
+      </header>
+      <main>
+        <div class="hero reveal">
+          <div>
+            <div class="eyebrow">
+              <span class="dot"></span>HEALTHCARE / OPERATIONS
+            </div>
+            <h1>
+              Hospital Management<span style="color: var(--accent)">.</span>
+            </h1>
+            <p class="tagline">A connected polyclinic platform</p>
+          </div>
+          <div class="hero-aside">
+            <strong>Care starts with clarity.</strong>A closer look at the work
+            behind the product.
+          </div>
+        </div>
+        <div class="overview reveal">
+          <div class="meta">
+            <span class="meta-label">Status</span>
+            <div class="meta-value">In production</div>
+          </div>
+          <div class="meta">
+            <span class="meta-label">Role</span>
+            <div class="meta-value">Lead and only developer, MKS Solutions</div>
+          </div>
+          <div class="meta">
+            <span class="meta-label">Stack</span>
+            <div class="meta-value">
+              Laravel 10 · MySQL · React Native · AWS (EC2, RDS) · Nginx
+            </div>
+          </div>
+        </div>
+        <p class="notice">
+          Case study only. No client code, data or screenshots with real patient
+          information are included in this repo.
+        </p>
+        <div class="layout">
+          <nav class="sidebar" aria-label="Case study sections">
+            <p class="sidebar-title">IN THIS CASE STUDY</p>
+            <a href="#problem">Problem</a><a href="#solution">Solution</a
+            ><a href="#the-hard-part">The hard part</a
+            ><a href="#how-i-worked">How I worked</a
+            ><a href="#architecture">Architecture</a
+            ><a href="#screenshots">Screenshots</a><a href="#results">Results</a
+            ><a href="#what-i-d-do-next">What I'd do next</a
+            ><a href="#links">Links</a
+            ><a class="source" href="README.md">Read original README ↗</a>
+          </nav>
+          <div class="content">
+            <section class="card reveal problem" id="problem">
+              <span class="section-no">01 / PROBLEM</span>
+              <h2>Problem</h2>
+              <p>
+                A polyclinic needed one system for patients, billing,
+                laboratory, other services and inpatient care instead of
+                separate tools.
+              </p>
+            </section>
+            <section class="card reveal" id="solution">
+              <span class="section-no">02 / SOLUTION</span>
+              <h2>Solution</h2>
+              <ul>
+                <li>Departments and role-based access for staff</li>
+                <li>
+                  An inpatient flow from admission to discharge: beds, accruing
+                  charges, surgery scheduling, deposits, approved discounts and
+                  refunds
+                </li>
+                <li>Appointment booking and IPD management</li>
+                <li>A mobile app built with React Native</li>
+              </ul>
+            </section>
+            <section class="card reveal wide" id="the-hard-part">
+              <span class="section-no">03 / THE HARD PART</span>
+              <h2>The hard part</h2>
+              <p>
+                Getting the billing rules right, Storing thousands of lab tests
+                with their fields, and fixing production issues such as 403
+                errors from the Nginx root and security groups.
+              </p>
+            </section>
+            <section class="card reveal wide" id="how-i-worked">
+              <span class="section-no">04 / HOW I WORKED</span>
+              <h2>How I worked</h2>
+              <ul>
+                <li>
+                  Researched hospital workflows and reviewed the clinic&#39;s
+                  old system before writing code
+                </li>
+                <li>
+                  Talked each feature through with Claude until rules, edge
+                  cases and screens were written down, then built from that
+                  brief
+                </li>
+                <li>
+                  Turned the inpatient module (admission to discharge, bed
+                  allocation, charges, deposits, refunds) into workflow diagrams
+                  and a detailed build prompt
+                </li>
+                <li>Read and tested every change before it shipped</li>
+              </ul>
+            </section>
+            <section class="card reveal wide" id="architecture">
+              <span class="section-no">05 / ARCHITECTURE</span>
+              <h2>Architecture</h2>
+              <div
+                class="diagram"
+                data-diagram="4"
+                aria-label="Hospital Management architecture diagram"
+              ></div>
+              <details open>
+                <summary>Architecture diagram source</summary>
+                <pre class="diagram-source"><code>flowchart LR
+    Staff[&quot;Staff (web)&quot;] --&gt; Nginx
+    Mobile[&quot;React Native app&quot;] --&gt; Nginx
+    subgraph AWS
+        Nginx --&gt; Laravel[&quot;Laravel 10 API + app&quot;]
+        Laravel --&gt; DB[(&quot;MySQL&quot;)]
+    end
+    Laravel --&gt; Modules
+    subgraph Modules
+        direction TB
+        P[Patients]
+        B[Billing]
+        L[Laboratory]
+        S[Other Services]
+        I[&quot;Inpatient: admission → discharge&quot;]
+    end
+</code></pre>
+              </details>
+            </section>
+            <section class="card reveal wide screenshots" id="screenshots">
+              <span class="section-no">06 / PRODUCT WALKTHROUGH</span>
+              <h2>Screenshots</h2>
+              <div class="gallery">
+                <figure class="shot">
+                  <figcaption class="shot-text"><h3>Dashboard</h3></figcaption>
+                  <button
+                    class="image-button"
+                    type="button"
+                    aria-label="Enlarge Hospital management dashboard"
+                  >
+                    <img
+                      src="screenshots/dashboard.png"
+                      alt="Hospital management dashboard"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                </figure>
+                <figure class="shot">
+                  <figcaption class="shot-text">
+                    <h3>Create Appointment</h3>
+                  </figcaption>
+                  <button
+                    class="image-button"
+                    type="button"
+                    aria-label="Enlarge Create an appointment"
+                  >
+                    <img
+                      src="screenshots/create_appointment.png"
+                      alt="Create an appointment"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                </figure>
+                <figure class="shot">
+                  <figcaption class="shot-text">
+                    <h3>IPD Dashboard</h3>
+                  </figcaption>
+                  <button
+                    class="image-button"
+                    type="button"
+                    aria-label="Enlarge Inpatient department dashboard"
+                  >
+                    <img
+                      src="screenshots/ipd_dashboard.png"
+                      alt="Inpatient department dashboard"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                </figure>
+                <figure class="shot">
+                  <figcaption class="shot-text">
+                    <h3>Finance Dashboard</h3>
+                  </figcaption>
+                  <button
+                    class="image-button"
+                    type="button"
+                    aria-label="Enlarge Finance dashboard"
+                  >
+                    <img
+                      src="screenshots/finance_dashboard.png"
+                      alt="Finance dashboard"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                </figure>
+                <figure class="shot">
+                  <figcaption class="shot-text">
+                    <h3>Laboratory Report</h3>
+                  </figcaption>
+                  <button
+                    class="image-button"
+                    type="button"
+                    aria-label="Enlarge Laboratory report"
+                  >
+                    <img
+                      src="screenshots/laboratory_report.png"
+                      alt="Laboratory report"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                </figure>
+                <figure class="shot">
+                  <figcaption class="shot-text"><h3>Mobile App</h3></figcaption>
+                  <button
+                    class="image-button"
+                    type="button"
+                    aria-label="Enlarge Hospital management mobile app"
+                  >
+                    <img
+                      src="screenshots/mobile_app.png"
+                      alt="Hospital management mobile app"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                </figure>
+              </div>
+            </section>
+            <section class="card reveal wide" id="results">
+              <span class="section-no">07 / RESULTS</span>
+              <h2>Results</h2>
+              <ul>
+                <li>Running a live polyclinic in production</li>
+                <li>99.9% uptime on AWS infrastructure (EC2 Instance)</li>
+              </ul>
+            </section>
+            <section class="card reveal wide" id="what-i-d-do-next">
+              <span class="section-no">08 / WHAT I'D DO NEXT</span>
+              <h2>What I'd do next</h2>
+              <p>
+                Integrate AI LLMs for smart business analysis and patients
+                health tracking.
+              </p>
+            </section>
+            <section class="card reveal wide" id="links">
+              <span class="section-no">09 / LINKS</span>
+              <h2>Links</h2>
+              <ul>
+                <li>
+                  Portfolio:
+                  <a href="https://0xsaif.vercel.app"
+                    >https://0xsaif.vercel.app</a
+                  >
+                </li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </main>
+      <footer>
+        <span>Saif / Hospital Management · Project case study</span
+        ><a href="../pharmacy-management-case-study/index.html"
+          >Next project: Pharmacy Management ↗</a
+        ><a class="top-button" href="#top">Back to top ↑</a>
+      </footer>
+    </div>
+    <dialog aria-label="Screenshot preview">
+      <div class="dialog-head">
+        <span id="image-caption"></span
+        ><button type="button" aria-label="Close screenshot preview">×</button>
+      </div>
+      <img alt="" />
+    </dialog>
+    <script>
+      const dialog = document.querySelector("dialog");
+      const fullImage = dialog.querySelector("img");
+      document.querySelectorAll(".image-button").forEach((button) =>
+        button.addEventListener("click", () => {
+          const img = button.querySelector("img");
+          fullImage.src = img.src;
+          fullImage.alt = img.alt;
+          document.getElementById("image-caption").textContent = img.alt;
+          dialog.showModal();
+        }),
+      );
+      dialog
+        .querySelector("button")
+        .addEventListener("click", () => dialog.close());
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) {
+          const rect = dialog.getBoundingClientRect();
+          if (
+            event.clientX < rect.left ||
+            event.clientX > rect.right ||
+            event.clientY < rect.top ||
+            event.clientY > rect.bottom
+          )
+            dialog.close();
+        }
+      });
+      const links = [...document.querySelectorAll('.sidebar a[href^="#"]')];
+      const sections = [...document.querySelectorAll(".content>section")];
+      let queued = false;
+      function update() {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        document.querySelector(".progress").style.width =
+          (max > 0 ? Math.min(100, (scrollY / max) * 100) : 0) + "%";
+        let current = sections[0];
+        for (const section of sections) {
+          if (section.getBoundingClientRect().top <= 140) current = section;
+        }
+        links.forEach((link) => {
+          const active = link.hash === "#" + current.id;
+          link.classList.toggle("active", active);
+          if (active) link.setAttribute("aria-current", "location");
+          else link.removeAttribute("aria-current");
+        });
+        queued = false;
+      }
+      addEventListener(
+        "scroll",
+        () => {
+          if (!queued) {
+            queued = true;
+            requestAnimationFrame(update);
+          }
+        },
+        { passive: true },
+      );
+      addEventListener("resize", update);
+      update();
+    </script>
+    <script type="module">
+      try {
+        const { default: mermaid } =
+          await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          securityLevel: "strict",
+          theme: "base",
+          themeVariables: {
+            primaryColor: "#2869a615",
+            primaryTextColor: "#202520",
+            primaryBorderColor: "#2869a6",
+            lineColor: "#8b958b",
+            fontFamily: "ui-sans-serif, system-ui",
+            fontSize: "13px",
+          },
+          flowchart: { htmlLabels: false, curve: "basis", useMaxWidth: true },
+        });
+        for (const element of document.querySelectorAll(".diagram")) {
+          const details = element.nextElementSibling;
+          try {
+            const { svg } = await mermaid.render(
+              "architecture-" + element.dataset.diagram,
+              details.querySelector("code").textContent,
+            );
+            element.innerHTML = svg;
+            details.open = false;
+          } catch {
+            element.textContent =
+              "Diagram preview unavailable. Architecture source is shown below.";
+          }
+        }
+      } catch {
+        document.querySelectorAll(".diagram").forEach((el) => {
+          el.textContent =
+            "Architecture source is available below. Connect to the internet to view the diagram.";
+          el.classList.add("diagram-error");
+        });
+      }
+    </script>
+  </body>
+</html>
